@@ -64,6 +64,6 @@ jobs:
         git add output/
         git commit -m 'Add output files - $COMMIT_DATE'
         git tag $NEW_BRANCH_NAME
-        git push origin $NEW_BRANCH_NAME
+        git push origin HEAD:refs/heads/$NEW_BRANCH_NAME
       env:        
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
