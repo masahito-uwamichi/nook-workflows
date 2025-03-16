@@ -33,6 +33,26 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
 
+    - name: Set up Git
+      run: |
+        git config --global user.name 'Masahito Uwamichi'
+        git config --global user.email '@example.com'
+      env:
+        GITHUB_USER_NAME: ${{ secrets.USER_NAME }}
+        GITHUB_EMAIL: ${{ secrets.EMAIL }}
+
+    - name: Commit and push output files
+      run: |
+        NEW_BRANCH_NAME=$(date +'%Y-%m')
+        COMMIT_DATE=$(date +'%Y-%m-%d')
+        # Check if branch exists
+        if git ls-remote --heads origin $NEW_BRANCH_NAME; then
+          git pull origin $NEW_BRANCH_NAME
+          git checkout $NEW_BRANCH_NAME
+        else
+          git checkout -b $NEW_BRANCH_NAME
+        fi
+
     - name: Run script
       working-directory: nook
       env:
@@ -44,23 +64,9 @@ jobs:
       run: |
         python main.py
 
-    - name: Set up Git
+    - name: Commit
+      working-directory: nook
       run: |
-        git config --global user.name 'Masahito Uwamichi'
-        git config --global user.email '@example.com'
-      env:
-        GITHUB_USER_NAME: ${{ secrets.USER_NAME }}
-        GITHUB_EMAIL: ${{ secrets.EMAIL }}
-
-    - name: Create new branch
-      run: |
-        NEW_BRANCH_NAME=$(date +'%Y-%m')
-        git checkout -b $NEW_BRANCH_NAME
-
-    - name: Commit and push output files
-      run: |
-        NEW_BRANCH_NAME=$(date +'%Y-%m')
-        COMMIT_DATE=$(date +'%Y-%m-%d')
         git add output/
         git commit -m 'Add output files - $COMMIT_DATE'
         git tag $NEW_BRANCH_NAME
