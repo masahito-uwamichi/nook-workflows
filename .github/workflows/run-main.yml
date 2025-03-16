@@ -15,8 +15,28 @@ jobs:
         options: --user 1001
 
     steps:
-    - name: Checkout repository
+    - name: Set up Git
+      run: |
+        git config --global user.name $GITHUB_USER_NAME
+        git config --global user.email $GITHUB_EMAIL
+      env:
+        GITHUB_USER_NAME: ${{ secrets.USER_NAME }}
+        GITHUB_EMAIL: ${{ secrets.EMAIL }}
+    
+    - name: Create YYYY-MM branch if it does not exist
+      id: create_branch
+      run: |
+        BRANCH_NAME=$(date +"%Y-%m")
+        if ! git ls-remote --exit-code --heads origin $BRANCH_NAME; then
+          git checkout -b $BRANCH_NAME
+          git push origin $BRANCH_NAME
+        fi
+        echo "::set-output name=branch::$BRANCH_NAME"
+
+    - name: Checkout YYYY-MM branch
       uses: actions/checkout@v2
+      with:
+        ref: ${{ steps.create_branch.outputs.branch }}
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -33,25 +53,6 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
 
-    - name: Set up Git
-      run: |
-        git config --global user.name 'Masahito Uwamichi'
-        git config --global user.email '@example.com'
-      env:
-        GITHUB_USER_NAME: ${{ secrets.USER_NAME }}
-        GITHUB_EMAIL: ${{ secrets.EMAIL }}
-
-    - name: Commit and push output files
-      run: |
-        NEW_BRANCH_NAME=$(date +'%Y-%m')
-        COMMIT_DATE=$(date +'%Y-%m-%d')
-        # Check if branch exists
-        if git ls-remote --heads origin $NEW_BRANCH_NAME; then
-          git checkout --track origin/$NEW_BRANCH_NAME
-        else
-          git checkout -b $NEW_BRANCH_NAME
-        fi
-
     - name: Run script
       working-directory: nook
       env:
@@ -62,11 +63,11 @@ jobs:
         OUTPUT_DIR: "${{ github.workspace }}/output"
       run: |
         python main.py
+        git add $OUTPUT_DIR
 
     - name: Commit
       working-directory: nook
       run: |
-        git add output/
         git commit -m 'Add output files - $COMMIT_DATE'
         git tag $NEW_BRANCH_NAME
         git push origin HEAD:refs/heads/$NEW_BRANCH_NAME
