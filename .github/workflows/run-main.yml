@@ -47,8 +47,7 @@ jobs:
         COMMIT_DATE=$(date +'%Y-%m-%d')
         # Check if branch exists
         if git ls-remote --heads origin $NEW_BRANCH_NAME; then
-          git pull origin $NEW_BRANCH_NAME
-          git checkout $NEW_BRANCH_NAME
+          git checkout --track origin/$NEW_BRANCH_NAME
         else
           git checkout -b $NEW_BRANCH_NAME
         fi
