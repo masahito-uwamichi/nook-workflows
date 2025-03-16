@@ -49,8 +49,8 @@ jobs:
         git config --global user.name 'Masahito Uwamichi'
         git config --global user.email '@example.com'
       env:
-        GITHUB_USER_NAME: ${{ secrets.GITHUB_USER_NAME }}
-        GITHUB_EMAIL: ${{ secrets.GITHUB_EMAIL }}
+        GITHUB_USER_NAME: ${{ secrets.USER_NAME }}
+        GITHUB_EMAIL: ${{ secrets.EMAIL }}
 
     - name: Create new branch
       run: |
