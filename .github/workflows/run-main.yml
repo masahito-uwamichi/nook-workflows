@@ -37,7 +37,7 @@ jobs:
       working-directory: nook
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}=
+        REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
         REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
         REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
         OUTPUT_DIR: "${{ github.workspace }}/output"
