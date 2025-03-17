@@ -15,6 +15,7 @@ jobs:
         options: --user 1001
 
     steps:
+        
     - name: Set up Git
       run: |
         git config --global user.name $GITHUB_USER_NAME
@@ -23,6 +24,11 @@ jobs:
         GITHUB_USER_NAME: ${{ secrets.USER_NAME }}
         GITHUB_EMAIL: ${{ secrets.EMAIL }}
     
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: main
+      
     - name: Create YYYY-MM branch if it does not exist
       id: create_branch
       run: |
