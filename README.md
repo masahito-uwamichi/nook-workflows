@@ -1,5 +1,7 @@
 [![Run main.py in Container](https://github.com/masahito-uwamichi/nook-workflows/actions/workflows/run-main.yml/badge.svg)](https://github.com/masahito-uwamichi/nook-workflows/actions/workflows/run-main.yml)
 
+[![Run nook action](https://github.com/masahito-uwamichi/nook-workflows/actions/workflows/run-nook.yml/badge.svg)](https://github.com/masahito-uwamichi/nook-workflows/actions/workflows/run-nook.yml)
+
 # nook-workflows
 umiyuki:nookを定期的に実行するワークフローを試しに作ってみるリポジトリです
 
