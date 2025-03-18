@@ -66,3 +66,4 @@ jobs:
         git push origin HEAD:refs/heads/$NEW_BRANCH_NAME
       env:        
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        OUTPUT_DIR: "${{ github.workspace }}/output"
