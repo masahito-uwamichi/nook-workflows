@@ -58,6 +58,11 @@ jobs:
         reddit_user_agent: ${{ secrets.REDDIT_USER_AGENT }}
         output_dir: "${{ github.workspace }}/output"
         
+    - name: Checkout YYYY-MM branch
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ steps.create_branch.outputs.branch }}
+        
     - name: Commit
       run: |
         BRANCH_NAME=$(date +"%Y-%m")
