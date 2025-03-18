@@ -60,10 +60,11 @@ jobs:
         
     - name: Commit
       run: |
+        BRANCH_NAME=$(date +"%Y-%m")
         git add $OUTPUT_DIR
         git commit -m 'Add output files - $COMMIT_DATE'
-        git tag $NEW_BRANCH_NAME
-        git push origin HEAD:refs/heads/$NEW_BRANCH_NAME
+        git tag $BRANCH_NAME
+        git push origin HEAD:refs/heads/$BRANCH_NAME
       env:        
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         OUTPUT_DIR: "${{ github.workspace }}/output"
