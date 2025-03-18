@@ -66,9 +66,10 @@ jobs:
     - name: Commit
       run: |
         BRANCH_NAME=$(date +"%Y-%m")
+        COMMIT_DATE=$(date +"%Y-%m-%d")
         git add $OUTPUT_DIR
-        git commit -m 'Add output files - $COMMIT_DATE'
-        git tag $BRANCH_NAME
+        git commit -m "Add output files - $COMMIT_DATE"
+        git tag -f $BRANCH_NAME
         git push origin HEAD:refs/heads/$BRANCH_NAME
       env:        
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
