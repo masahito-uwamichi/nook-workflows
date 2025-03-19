@@ -1,0 +1,71 @@
+name: Run nook action
+
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+  schedule: # Runs the workflow periodically
+    - cron: '0 0 * * *' # Runs every day at midnight UTC
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: python:3.12
+        options: --user 1001
+
+    steps:
+        
+    - name: Set up Git
+      run: |
+        git config --global user.name $GITHUB_USER_NAME
+        git config --global user.email $GITHUB_EMAIL
+      env:
+        GITHUB_USER_NAME: ${{ secrets.USER_NAME }}
+        GITHUB_EMAIL: ${{ secrets.EMAIL }}
+    
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: main
+      
+    - name: Create YYYY-MM branch if it does not exist
+      id: create_branch
+      run: |
+        BRANCH_NAME=$(date +"%Y-%m")
+        if ! git ls-remote --exit-code --heads origin $BRANCH_NAME; then
+          git checkout -b $BRANCH_NAME
+          git push origin $BRANCH_NAME
+        fi
+        echo "::set-output name=branch::$BRANCH_NAME"
+
+    - name: Checkout YYYY-MM branch
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ steps.create_branch.outputs.branch }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
+    - name: Run Nook Main Script
+      uses: masahito-uwamichi/nook/.github/actions/run-main@main
+      with:
+        gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+        reddit_client_id: ${{ secrets.REDDIT_CLIENT_ID }}
+        reddit_client_secret: ${{ secrets.REDDIT_CLIENT_SECRET }}
+        reddit_user_agent: ${{ secrets.REDDIT_USER_AGENT }}
+        output_dir: "${{ github.workspace }}/output"
+                
+    - name: Commit
+      run: |
+        BRANCH_NAME=$(date +"%Y-%m")
+        COMMIT_DATE=$(date +"%Y-%m-%d")
+        git add $OUTPUT_DIR
+        git commit -m "Add output files - $COMMIT_DATE"
+        git tag -f $BRANCH_NAME
+        git push origin HEAD:refs/heads/$BRANCH_NAME
+      env:        
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        OUTPUT_DIR: "${{ github.workspace }}/output"
