@@ -30,6 +30,7 @@ Workflow Permissionsを「Read and write permissions」にしてSave
 ## (optional) Actions から Run nook action を実行
 
 日本時間午前９時ごろに定期実行されるので、その他の必要に応じて実行
+
 Geminiのトークンを消費するので、実行しすぎには注意
 
 ## Action から Run FastAPI server for 60 minutes を実行
