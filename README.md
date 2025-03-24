@@ -20,6 +20,7 @@ secretsに以下を追加:
 - REDDIT_USER_AGENT
 - EMAIL
 - USER_NAME
+- NGROK_AUTH_TOKEN
 
 ## リポジトリのアクセス権限を変更
 
