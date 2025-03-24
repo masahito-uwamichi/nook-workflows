@@ -1,4 +1,4 @@
-name: Run FastAPI server for 20 minutes
+name: Run FastAPI server for 60 minutes
 
 on: 
   workflow_dispatch:
