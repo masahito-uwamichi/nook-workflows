@@ -20,4 +20,7 @@ jobs:
 
     - name: Start hosting
       uses: masahito-uwamichi/nook/.github/actions/run-viewer@main
-
+      with:
+        gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+        ngrok_auth_token: ${{ secrets.NGROK_AUTH_TOKEN }}
+        output_dir: "${{ github.workspace }}/output"
