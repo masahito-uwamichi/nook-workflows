@@ -7,22 +7,46 @@
     <script>
         async function fetchBranches() {
             const response = await fetch('https://api.github.com/repos/masahito-uwamichi/nook-workflows/branches');
-            const data = await response.json();
-            const select = document.getElementById('branch-select');
-            data.forEach(branch => {
-                const option = document.createElement('option');
-                option.value = branch.name;
-                option.textContent = branch.name;
-                select.appendChild(option);
+            if (response.ok) {
+                const data = await response.json();
+                const select = document.getElementById('branch-select');
+                data.forEach(branch => {
+                    const option = document.createElement('option');
+                    option.value = branch.name;
+                    option.textContent = branch.name;
+                    select.appendChild(option);
+                });
+                updateAction();
+            } else {
+                console.error('Failed to fetch branches:', response.statusText);
+            }
+        }
+
+        async function triggerWorkflow(branch) {
+            const response = await fetch(`https://api.github.com/repos/masahito-uwamichi/nook-workflows/actions/workflows/deploy.yml/dispatches`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Authorization': 'Bearer YOUR_PERSONAL_ACCESS_TOKEN',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ref: branch
+                })
             });
-            updateAction();
+
+            if (response.ok) {
+                alert('Workflow triggered successfully!');
+            } else {
+                const errorData = await response.json();
+                console.error('Failed to trigger workflow:', errorData);
+                alert(`Failed to trigger workflow: ${errorData.message}`);
+            }
         }
 
         function updateAction() {
             const branch = document.getElementById('branch-select').value;
-            const form = document.getElementById('deploy-form');
-            form.action = `https://api.github.com/repos/masahito-uwamichi/nook-workflows/actions/workflows/deploy.yml/dispatch`;
-            form.branch.value = branch;
+            document.getElementById('deploy-button').onclick = () => triggerWorkflow(branch);
         }
 
         window.onload = fetchBranches;
@@ -37,9 +61,6 @@
         <!-- Branch options will be populated dynamically -->
     </select>
     
-    <form id="deploy-form" method="POST">
-        <input type="hidden" name="ref" value="">
-        <button type="submit">Start Server</button>
-    </form>
+    <button id="deploy-button">Start Server</button>
 </body>
 </html>
