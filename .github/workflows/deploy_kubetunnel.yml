@@ -1,0 +1,26 @@
+name: Run FastAPI server for 60 minutes through Cloudflare
+
+on: 
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run the server on'
+        required: true
+        default: 'main'
+
+jobs:
+  run-server:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}
+
+    - name: Start hosting
+      uses: masahito-uwamichi/nook/.github/actions/run-viewer-kubetunnel@main
+      with:
+        gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+        cloudflare_tunnel_token: ${{ secrets.CLOUD_FLARE_TUNNEL_TOKEN }}
+        output_dir: "${{ github.workspace }}/output"
